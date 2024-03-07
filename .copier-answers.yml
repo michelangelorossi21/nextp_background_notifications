@@ -1,0 +1,20 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.2.5
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: michelangelo.rossi91@gmail.com
+author_name: Michelangelo Rossi
+data_format: string
+file_extension: ''
+has_binder: true
+has_settings: false
+kind: frontend
+labextension_name: nextp_background_notifications
+mimetype: ''
+mimetype_name: ''
+project_short_description: A NextPyter extension that notifies the user when a cell
+    has been executed.
+python_name: nextp_background_notifications
+repository: ''
+test: true
+viewer_name: ''
+
