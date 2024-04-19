@@ -1,0 +1,7 @@
+{
+  "ServerApp": {
+      "jpserver_extensions": {
+          "nextp_bg_not_server_extension": true
+      }
+  }
+}

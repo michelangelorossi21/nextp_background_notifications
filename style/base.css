@@ -3,3 +3,56 @@
 
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
+
+.json-editor-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: auto;
+  }
+
+  h3 {
+    margin-left: 5px;
+  }
+
+.row {
+    padding: 10px /* Distribute space between cells */
+  }
+  
+  .cell {
+    margin: 10px;
+    
+  }
+  
+  .value_subcell {
+    margin-left: 3px; /* Adjust margin for spacing between subcells */
+  }
+
+  .button_subcell {
+    padding: 8px;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    color: blue;
+  }
+
+  a:link {
+    font-weight: normal;
+    text-decoration: underline;
+  }
+
+  .default {
+    font-weight: bold;
+  }
+
+  button {
+    margin: 5px;
+  }
+
+
+  
+
+
+
+
