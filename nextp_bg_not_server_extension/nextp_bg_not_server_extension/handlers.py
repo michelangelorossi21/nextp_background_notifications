@@ -3,17 +3,17 @@ from jupyter_server import serverapp
 import tornado
 import json
 import os
-import logging
 import requests
 
 '''TODO
-    1. FIXME: PUT request not working. 
+    1. DONE: PUT request not working. DONE: but only disablng csrf tokens. 
     2. TODO: Find a way to copy the server_config.d/json file automatically and not manually. maybe in the setup.py...
 '''
 PROTOTYPES = {"telegram": {"name": "", "token": "", "chat_id":"", "default":""}, 
               "slack": {"name": "", "channel": "", "token": "", "default": ""}}
 
 class JSONHandler(JupyterHandler):
+
     #@tornado.web.authenticated
     def initialize(self, json_file_path):
         self.json_file_path = json_file_path
@@ -21,12 +21,11 @@ class JSONHandler(JupyterHandler):
     #@tornado.web.authenticated
     def get(self):
         try:
-            logging.info ('GET request received.')
+
             # Attempt to load JSON from file
             with open(self.json_file_path, 'r') as f:
                 json_data = json.load(f)
             self.finish(json_data)
-            logging.info('json file correctly opened.')
 
         except FileNotFoundError:
             # File not found. Create one.
@@ -39,48 +38,31 @@ class JSONHandler(JupyterHandler):
             self.set_status(200)
             self.finish(json_data)
             self.finish({'error': str(FileNotFoundError)})
-            logging.error('File not found! Created a new one')
 
         except Exception as e:
-            logging.error('JSON file not opened.')
             self.set_status(500)
             self.finish({'error': str(e)})
             
     #@tornado.web.authenticated
     def put(self):
         try:
-            # get xsrf_token:
-            xsrf_token = self.get_xsrf_token()
-            if (xsrf_token):
-                headers = {"X-XSRFToken": xsrf_token, "Content-Type": "application/json"}
-
-                # Parse JSON data from the request body
-                json_data = json.loads(self.request.body)
-
-                # Write the updated JSON data to the file
-                put_response = requests.put(url='/nextp-background-notifications/platform_config', headers=headers, json=json_data)
-
-                if put_response.status_code == '200':
-                    self.write('PUT requests successful')
-                else:
-                    self.write('PUT request failed.')
-                
-                logging.info('JSON file correctly modified')
             
-            else:
-                self.write('xsrf_token not found in request headers')
+            headers = {"Content-Type": "application/json"}
+
+            # Parse JSON data from the request body
+            json_data = json.loads(self.request.body)
+
+            # Write the updated JSON data to the file
+            with open(self.json_file_path, 'w') as f:
+                json.dump(json_data, f)
 
         except json.JSONDecodeError as e:
             self.set_status(400)  # Bad Request
             self.finish({'error': 'Invalid JSON format in request body'})
-            logging.error('PUT request failed, invalid JSON.')
+
         except Exception as e:
             self.set_status(500)
             self.finish({'error': str(e)})
-            logging.error('PUT request failed, Server error.')
-    
-    def get_xsrf_token(self):
-        return self.request.headers.get("X-XSRFToken")
 
 
 def create_config_dir(base_path):
@@ -97,7 +79,6 @@ def _load_jupyter_server_extension(nb_server_app):
     # if doesn't exist yet, creates a dir to store config files.
     current_dir = os.getcwd()
     config_dir = create_config_dir(current_dir)
-    logging.info('Config_dir: ', config_dir)
 
     # Create paths for platform_config file and prototypes file
     platform_file_path = os.path.join(config_dir, 'platform_config.json')
@@ -117,8 +98,3 @@ def _load_jupyter_server_extension(nb_server_app):
                 ]
     web_app.add_handlers(".*$", handlers)
     
-    # Configure logging
-    logging.basicConfig(filename='jupyter_server_extension.log', level=logging.INFO)
-    logging.info('nextp_bg_not_server_extension loaded successfully')
-    
-    logging.info(current_dir)
