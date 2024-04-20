@@ -2,18 +2,15 @@ from IPython.core.magic import Magics, magics_class, line_magic, cell_magic, lin
 from IPython.core.getipython import get_ipython
 from IPython.core.magic_arguments import argument, magic_arguments, parse_argstring
 from .notification import send_notification
-from .get_server_infos import get_url, get_kernel_id, get_notebook_from_request
+from utils import get_notebook_from_request
 
 import time
-
-# Gestire le destinazioni inserite manualmente: siccome si parla di token, cioè dati
-# sensibili, forse meglio mettere anche le impostazioni di default in un file Json con diritti di accesso)
 
 @magics_class
 class NextP_notification_magic(Magics):
 
     @magic_arguments()
-    # Argument to specify the platform (default=Telegram)
+    # Argument to specify the platform
     @argument(
         "--platform",
         "-p",

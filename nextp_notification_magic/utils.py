@@ -57,3 +57,21 @@ def get_notebook_from_request():
         if kernel['id'] == kernel_id:
             notebook = session['notebook']
             return notebook['path']
+
+
+def fetch_platform_config():
+    url_token = get_url()
+    
+    # Save url and discard the token
+    url = url_token[0]
+
+    endpoint = '/nextp-background-notifications/platform_config'
+    url += endpoint
+
+    response = requests.get(url)
+    if response.status_code == 200:
+        config_data = response.json()
+        return config_data
+    else:
+        print("Failed to fetch platform config: ", response.status_code)
+        return None

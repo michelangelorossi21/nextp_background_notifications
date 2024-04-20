@@ -1,4 +1,5 @@
 import requests
+from utils import fetch_platform_config
 
 
 def send_notification(info, platform=None, destination=None):
@@ -33,66 +34,107 @@ def send_notification(info, platform=None, destination=None):
         print("Nextp_notification_magic error: Please choose a valid platform.")
 
 
-def send_slack_notification(message, slack_channel):
+def send_slack_notification(message, destination):
 
-    # if no slack channel specified, apply default settings:
-    if not slack_channel:
-        slack_token = "xoxb-6703325644467-6726392297392-Sj7srcNuEmArbsegDwQUcQoT" # maybe risky
-        channel = '#nextpyter-background-notifications'
+    config_data = fetch_platform_config()
+    if config_data:
+        # select only slack channels:
+        slack_channels = config_data['slack'] 
+
+        # if no destination specified, search for a default destination:
+        if not destination:
+            for slack_channel in slack_channels:
+                if slack_channel['default']: # only one default per platform
+                    name = slack_channel['name']
+                    channel = slack_channel['channel']
+                    token = slack_channel['token']
+                
+                # if no default present: ERROR!
+                else:
+                    print('ERROR: No Slack default present. Please check settings.')
+
+        # destination specified:
+        else:
+            # Verify that the destination really exists:
+            for slack_channel in slack_channels:
+                if destination == slack_channel['name']:
+                    name = slack_channel['name']
+                    channel = slack_channel['channel']
+                    token = slack_channel['token']
+            
+        url = "https://slack.com/api/chat.postMessage"
+                        
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "channel": channel,
+            "text": message
+        }
+
+        # Check if notification has been correctly sent
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+            response_data = response.json()
+            if response_data["ok"]:
+                print("Notifica inviata con successo a", channel)
+            else:
+                print("Errore nell'invio della notifica:", response_data["error"])
+        except Exception as e:
+            print(f"Errore nell'invio della notifica: {e}")
+
     else:
-        slack_token = slack_channel['slack_token']
-        channel = slack_channel['channel']
+        print('ERROR: platform_config data not correcty imported. Check if platform_config.json exists or is correctly located.')
+
+
+def send_telegram_notification(message, destination):
+
+    config_data = fetch_platform_config()
+
+    if config_data:
+
+        telegram_bots = config_data['telegram'] # select only telegram bots
+
+        # if no destination specified, search for a default destination:
+        if not destination:
+            for telegram_bot in telegram_bots:
+                if telegram_bot['default']: # only one default per platform
+                    bot_name = telegram_bot['name']
+                    bot_token = telegram_bot['token']
+                    chat_id = telegram_bot['chat_id']
+                
+                # if no default present: ERROR!
+                else:
+                    print('ERROR: No Telegram default present. Please check settings.')
+
+        # destination specified:
+        else:
+            # Verify that the destination really exists:
+            for telegram_bot in telegram_bots:
+                if destination == telegram_bot['name']:
+                    bot_name = telegram_bot['name']
+                    bot_token = telegram_bot['bot_token']
+                    chat_id = telegram_bot['chat_id']
+            
+
+        # collect params:
+        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        params = {"chat_id": chat_id, "text": message}
+
+        # check if the notification has been correctly sent:
+        try:
+            response = requests.post(url, json=params)
+            response_data = response.json()
+            if response_data["ok"]:
+                bot_name = response_data['result']['from']['first_name']
+                print("Notification correctly sent to ", bot_name)
+            else:
+                print("Error in sending notification:", response_data["error"])
+        except Exception as e:
+            print(f"Error in sending notification: {e}. Please check settings.")
         
-    url = "https://slack.com/api/chat.postMessage"
-                    
-    headers = {
-        "Authorization": f"Bearer {slack_token}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "channel": channel,
-        "text": message
-    }
-
-    # Check if notification has been correctly sent
-    try:
-        response = requests.post(url, headers=headers, json=payload)
-        response_data = response.json()
-        if response_data["ok"]:
-            print("Notifica inviata con successo a", channel)
-        else:
-            print("Errore nell'invio della notifica:", response_data["error"])
-    except Exception as e:
-        print(f"Errore nell'invio della notifica: {e}")
-
-    #return response.json()
-
-
-def send_telegram_notification(message, telegram_bot):
-
-    # if no telegram bot specified, apply default settings:
-    if not telegram_bot:
-        bot_name = "nextpyter-background-notifications"
-        bot_token = "6445242786:AAEnJwR5SJEPovVEL5SMdzqwE2x2D4E2ijY"
-        chat_id = 222553562
     else:
-        bot_token = telegram_bot['bot_token']
-        chat_id = telegram_bot['chat_id']
+        print('ERROR: platform_config data not correcty imported. Check if platform_config.json exists or is correctly located.')
 
-    # collect params:
-    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    params = {"chat_id": chat_id, "text": message}
 
-    # check if the notification has been correctly sent:
-    try:
-        response = requests.post(url, json=params)
-        response_data = response.json()
-        if response_data["ok"]:
-            bot_name = response_data['result']['from']['first_name']
-            print("Notifica inviata con successo a", bot_name)
-        else:
-            print("Errore nell'invio della notifica:", response_data["error"])
-    except Exception as e:
-        print(f"Errore nell'invio della notifica: {e}")
-    
-    #print(response.json())

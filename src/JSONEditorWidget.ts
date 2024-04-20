@@ -1,14 +1,12 @@
 import { Widget } from '@lumino/widgets';
 
 /* TODO Things to do (order of priority):
+2. TODO: pass CSRF token in the put request. How???
 3a.
-    1.DONE:  Delete button doesn't work as expected. need to re-render the page properly. (230)
-    2.DONE: when editing a cell, some input boxes appear 
     3. FIXME: enter a new dict only if all fields are complete;
-    4. FIXME: to avoid multiple new rows (which are not recognized), when clicke "add new" button, the button could change to "enter"
+    4. FIXME: to avoid multiple new rows (which are not recognized), when click "add new" button, the button could change to "enter"
         or gets invisible? (361)
 
-3b. TODO: Add a "save" button at the bottom of the page to update the original JSON file; --> use the updateJSONData function !
 3c. TODO: maybe sanitize the inputs
 
 4. Pack the extension
@@ -68,11 +66,21 @@ class JSONEditorWidget extends Widget {
 
     // Function to overwrite the original json config file with new data.
     async updateJSONData(): Promise<void> {
+        const csrfToken = localStorage.getItem('csrfToken');
+        if (!csrfToken) {
+            throw new Error('CSRF token not found');
+        }
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json'
+        };
+
+        // Include CSRF token in headers if it exists
+        if (csrfToken !== null) {
+            headers['X-CSRF-Token'] = csrfToken;
+        }
         const response = await fetch(this.configFilePath, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             body: JSON.stringify(this.jsonContent)
         }
         )
