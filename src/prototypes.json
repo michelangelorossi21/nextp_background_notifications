@@ -1,4 +1,0 @@
-{
-    "telegram": {"name": "", "token": "", "chat_id":"", "default":""}, 
-    "slack": {"name": "", "channel": "", "token": "", "default": ""}
-}

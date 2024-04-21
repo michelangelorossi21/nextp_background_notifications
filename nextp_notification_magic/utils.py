@@ -65,7 +65,7 @@ def fetch_platform_config():
     # Save url and discard the token
     url = url_token[0]
 
-    endpoint = '/nextp-background-notifications/platform_config'
+    endpoint = 'nextp-background-notifications/platform_config'
     url += endpoint
 
     response = requests.get(url)
@@ -73,5 +73,5 @@ def fetch_platform_config():
         config_data = response.json()
         return config_data
     else:
-        print("Failed to fetch platform config: ", response.status_code)
+        print(f"Failed to fetch platform config: {response.status_code} ", url)
         return None

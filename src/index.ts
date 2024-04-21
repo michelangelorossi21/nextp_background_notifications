@@ -4,17 +4,19 @@ import { IMainMenu } from '@jupyterlab/mainmenu';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { Menu } from '@lumino/widgets';
 import { JSONEditorWidget } from './JSONEditorWidget';
+import { PageConfig } from '@jupyterlab/coreutils'
+
 /*
   TODO
-  1. Jupyter Server Extension:
-    a. implement the server-side extension that handles GET and POST requests; DONE:, AT LAST!!
-  2. TODO: find a way to avoid hardcoded protocol and base_url  
+  1. Jupyter Server Extension: DONE:
+
+  2. DONE: find a way to avoid hardcoded protocol and base_url  
 */
 const PLUGIN_ID = 'NextPyter_notifications';
 
-const baseUrl = 'http://localhost:8888'; //TODO: verify if get url from something in the NextPyter Code (and not hardcoded)
-const configFilePath = `${baseUrl}/nextp-background-notifications/platform_config`;
-const prototypesFilePath = `${baseUrl}/nextp-background-notifications/prototypes`;
+const baseUrl = PageConfig.getBaseUrl(); 
+const configFilePath = `${baseUrl}nextp-background-notifications/platform_config`;
+const prototypesFilePath = `${baseUrl}nextp-background-notifications/prototypes`;
 
 function activate(app: JupyterFrontEnd, palette: ICommandPalette, menu: IMainMenu, settings: ISettingRegistry.ISettings): void {
   console.log(`JupyterLab extension ${PLUGIN_ID} is activated!`);

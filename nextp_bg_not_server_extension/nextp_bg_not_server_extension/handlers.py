@@ -6,7 +6,7 @@ import os
 import requests
 
 '''TODO
-    1. DONE: PUT request not working. DONE: but only disablng csrf tokens. 
+    1. DONE: PUT request now working, BUT ONLY DISABLING CSRF TOKENS. 
     2. TODO: Find a way to copy the server_config.d/json file automatically and not manually. maybe in the setup.py...
 '''
 PROTOTYPES = {"telegram": {"name": "", "token": "", "chat_id":"", "default":""}, 

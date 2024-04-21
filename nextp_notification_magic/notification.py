@@ -1,5 +1,5 @@
 import requests
-from utils import fetch_platform_config
+from .utils import fetch_platform_config
 
 
 def send_notification(info, platform=None, destination=None):
@@ -13,9 +13,9 @@ def send_notification(info, platform=None, destination=None):
     elapsed_time = info['elapsed_time']
 
     # Add infos to message:
-    message += "Notebook name: {}\n".format(notebookId)
-    message += "Cell No: {}\n".format(cellNo)
-    message += "Cell ID: {}\n".format(cellId)
+    message += f"Notebook name: {notebookId}\n"
+    message += f"Cell No: {cellNo}\n"
+    message += f"Cell ID: {cellId}\n"
     message += "Elapsed time: {:.{}f} s\n".format(elapsed_time, 2)
     
     # check for exeptions and add to message:
@@ -23,7 +23,7 @@ def send_notification(info, platform=None, destination=None):
         message += "Cell correctly executed!"
     else:
         message += "Execution failed!\n"
-        message += "Error: {}".format(exception)
+        message += f"Error: {exception}"
 
     # call the chosen platform notification or print error:
     if platform == 'telegram' or platform is None:
@@ -43,15 +43,19 @@ def send_slack_notification(message, destination):
 
         # if no destination specified, search for a default destination:
         if not destination:
+            foundDefault = False
+
             for slack_channel in slack_channels:
                 if slack_channel['default']: # only one default per platform
+                    foundDefault = True
+
                     name = slack_channel['name']
                     channel = slack_channel['channel']
                     token = slack_channel['token']
                 
-                # if no default present: ERROR!
-                else:
-                    print('ERROR: No Slack default present. Please check settings.')
+            # if no default present: ERROR!
+            if not foundDefault:
+                print('ERROR: No Slack default present. Please check settings.')
 
         # destination specified:
         else:
@@ -78,11 +82,11 @@ def send_slack_notification(message, destination):
             response = requests.post(url, headers=headers, json=payload)
             response_data = response.json()
             if response_data["ok"]:
-                print("Notifica inviata con successo a", channel)
+                print(f"Notification correctly sent to {channel}")
             else:
-                print("Errore nell'invio della notifica:", response_data["error"])
+                print(f"Error in sending notification: {response_data["error"]}")
         except Exception as e:
-            print(f"Errore nell'invio della notifica: {e}")
+            print(f"Error in sending notification: {e}")
 
     else:
         print('ERROR: platform_config data not correcty imported. Check if platform_config.json exists or is correctly located.')
@@ -98,15 +102,18 @@ def send_telegram_notification(message, destination):
 
         # if no destination specified, search for a default destination:
         if not destination:
+            foundDefault = False
             for telegram_bot in telegram_bots:
                 if telegram_bot['default']: # only one default per platform
+                    foundDefault = True
+
                     bot_name = telegram_bot['name']
                     bot_token = telegram_bot['token']
                     chat_id = telegram_bot['chat_id']
                 
-                # if no default present: ERROR!
-                else:
-                    print('ERROR: No Telegram default present. Please check settings.')
+            # if no default present: ERROR!
+            if not foundDefault:
+                print('ERROR: No Telegram default present. Please check settings.')
 
         # destination specified:
         else:
@@ -128,9 +135,9 @@ def send_telegram_notification(message, destination):
             response_data = response.json()
             if response_data["ok"]:
                 bot_name = response_data['result']['from']['first_name']
-                print("Notification correctly sent to ", bot_name)
+                print(f"Notification correctly sent to {bot_name}")
             else:
-                print("Error in sending notification:", response_data["error"])
+                print(f"Error in sending notification: {response_data["error"]}")
         except Exception as e:
             print(f"Error in sending notification: {e}. Please check settings.")
         

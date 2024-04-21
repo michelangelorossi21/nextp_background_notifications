@@ -2,9 +2,11 @@ from IPython.core.magic import Magics, magics_class, line_magic, cell_magic, lin
 from IPython.core.getipython import get_ipython
 from IPython.core.magic_arguments import argument, magic_arguments, parse_argstring
 from .notification import send_notification
-from utils import get_notebook_from_request
+from .utils import get_notebook_from_request
 
 import time
+
+# TODO: show the output when cell has finished executing
 
 @magics_class
 class NextP_notification_magic(Magics):
@@ -32,6 +34,7 @@ class NextP_notification_magic(Magics):
             # Run cell and get elapsed time
             start_time = time.time()
             output = get_ipython().run_cell(cell)
+            print(output.result)
             end_time = time.time()
 
             # Arg parser

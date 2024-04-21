@@ -1,13 +1,11 @@
 import { Widget } from '@lumino/widgets';
 
 /* TODO Things to do (order of priority):
-2. TODO: pass CSRF token in the put request. How???
-3a.
-    3. FIXME: enter a new dict only if all fields are complete;
-    4. FIXME: to avoid multiple new rows (which are not recognized), when click "add new" button, the button could change to "enter"
-        or gets invisible? (361)
+1. TODO: pass CSRF token in the put request. How???
 
-3c. TODO: maybe sanitize the inputs
+2. DONE: enter a new dict only if all fields are complete;
+
+3. TODO: maybe sanitize the inputs
 
 4. Pack the extension
 */
@@ -66,18 +64,18 @@ class JSONEditorWidget extends Widget {
 
     // Function to overwrite the original json config file with new data.
     async updateJSONData(): Promise<void> {
-        const csrfToken = localStorage.getItem('csrfToken');
+        /* const csrfToken = localStorage.getItem('csrfToken');
         if (!csrfToken) {
             throw new Error('CSRF token not found');
-        }
+        } */
         const headers: HeadersInit = {
             'Content-Type': 'application/json'
         };
 
         // Include CSRF token in headers if it exists
-        if (csrfToken !== null) {
+        /* if (csrfToken !== null) {
             headers['X-CSRF-Token'] = csrfToken;
-        }
+        } */
         const response = await fetch(this.configFilePath, {
             method: 'PUT',
             headers: headers,
@@ -303,8 +301,18 @@ class JSONEditorWidget extends Widget {
                 platform_section.appendChild(row);
             }
 
-            // Add a "Add new" button at the end of one platform to create a new dict: (WARNING: INSERT ONLY ONE ROW AT ONCE)
+            // Add a "Add new" button at the end of one platform to create a new dict:
+            // create the "add new" button and append it to the platform_section:
+            const addButton = document.createElement('button');
+            addButton.id = `${key}-AddNewButton`
+            addButton.textContent = 'Add New';
+
+            // append the platform section to the container:
+            container.appendChild(platform_section);
             const createNewRow = () => {
+                // Turn off the "Add New" Button (avoid creating multiple rows, creates conflicts)
+                addButton.disabled = true;
+
                 const newRow = document.createElement('div');
                 newRow?.classList.add('row');
                 newRow.id = `${key}-${list.length}-input`;
@@ -342,22 +350,42 @@ class JSONEditorWidget extends Widget {
                     const addedRow = document.getElementById(`${key}-${list.length}-input`);
                     if (addedRow) {
                         const inputs: NodeListOf<HTMLInputElement> = addedRow.querySelectorAll('input');
+                        let isValid = true;
 
                         inputs.forEach((input: HTMLInputElement) => {
-                            inputValues[input.id] = input.value;
-                    })
+                            if (input.value.trim() == '') {
+                                console.log(input.value.trim());
+                                isValid = false;
+                            }
+                            else {
+                                inputValues[input.id] = input.value;
+                            }
+                            
+                        });
 
-                    // Set default to false to avoid inconsistency:
-                    inputValues['default'] = false;
+                        if (isValid) {
+                            // Set default to false to avoid inconsistency:
+                            inputValues['default'] = false;
 
-                    // append the inputValues to the platform list:
-                    list.push(inputValues);
+                            // append the inputValues to the platform list:
+                            list.push(inputValues);
 
-                    // remove the input boxes and re-render the page with the updated dict:
-                    //newRow.remove();
-                    this.render();
+                            // remove the input boxes and re-render the page with the updated dict:
+                            //newRow.remove();
+                            this.render();
+                        }
+                        else {
+                            const warningMessage = document.createElement('div');
+                            warningMessage.id = `${key}-warningMessage`;
+                            warningMessage?.classList.add('warning-message');
+                            warningMessage.textContent = 'Some inputs are left blank. Please fill them.';
+
+                            const warning = document.getElementById(`${key}-warningMessage`);
+                            if (!warning) {
+                                addedRow.appendChild(warningMessage);
+                            }
+                        }
                     }
-                    
                 }
 
                 const saveButton = document.createElement('button');
@@ -367,27 +395,18 @@ class JSONEditorWidget extends Widget {
                 platform_section.appendChild(newRow);
             }
             
-            //FIXME: when clicked "add new row", the button changes to "Enter":
-            // create the "add new" button and append it to the platform_section:
-            const addButton = document.createElement('button');
-            addButton.textContent = 'Add New';
             addButton.addEventListener('click', createNewRow);
             platform_section.appendChild(addButton);
-
-            // append the platform section to the container:
-            container.appendChild(platform_section);
 
         }   
     }
 
-    //TODO: add a "Save" Button to upload the JSON file:
+    // Add a Save button at the bottom of the page to upload the JSON platform_config file.
     const saveButton = document.createElement('button');
     saveButton.textContent = 'Save';
+    saveButton.id = 'saveButton';
     saveButton.addEventListener('click', () => this.updateJSONData());
     container.appendChild(saveButton);
-    
-    
-
 
     // Add the container to the widget node
     this.node.appendChild(container);
