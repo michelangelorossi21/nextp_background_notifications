@@ -34,7 +34,6 @@ class NextP_notification_magic(Magics):
             # Run cell and get elapsed time
             start_time = time.time()
             output = get_ipython().run_cell(cell)
-            print(output.result)
             end_time = time.time()
 
             # Arg parser

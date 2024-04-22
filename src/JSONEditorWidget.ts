@@ -179,6 +179,7 @@ class JSONEditorWidget extends Widget {
 
                                     // make sure that there is only one default per platform and reload the representation:
                                     toggle_default(dict, list);
+                                    this.updateJSONData();
                                     this.render();
                                 });
                                 
@@ -198,11 +199,7 @@ class JSONEditorWidget extends Widget {
                 }
 
                 // Add a "edit button" to modify a dict:
-                const editButton = document.createElement('button');
-                editButton.textContent = 'Edit';
-                editButton.addEventListener('click', editMode );
-
-                function editMode() {
+                const editMode = () => {
                     const rowParent = document.getElementById(`${key}-${index}`);
                     console.log(`Modifyng ${key}-${index} ${row.id}`)
                     const value_subcells = rowParent?.querySelectorAll('.value_subcell');
@@ -226,7 +223,7 @@ class JSONEditorWidget extends Widget {
                     editButton.addEventListener('click', enterDataAndExitEditMode);
                 }
                 
-                function enterDataAndExitEditMode() {
+                const enterDataAndExitEditMode = () => {
                     let updatedValues: { [key: string]: any } = {};
 
                     const rowParent = document.getElementById(`${row.id}`);
@@ -249,13 +246,17 @@ class JSONEditorWidget extends Widget {
                 
                     // Update the list with the updated values
                     list[index] = updatedValues;
+                    this.updateJSONData();
                 
                     // Change button text back to "Edit" and switch event listeners
                     editButton.textContent = 'Edit';
                     editButton.removeEventListener('click', enterDataAndExitEditMode);
                     editButton.addEventListener('click', editMode);
                 }
-                
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.addEventListener('click', editMode );
 
                 // Add button to delete a dict:
                 const deleteButton = document.createElement('button');
@@ -275,8 +276,8 @@ class JSONEditorWidget extends Widget {
                         const row_index = rowParent.id.split('-')[1]; // find the index of the row in the list:
                         console.log(`element to delete: ${row_index}`);
                         list.splice(row_index, 1);
-                        console.log(list);
                         rowParent.remove();
+                        this.updateJSONData();
                         
 
                         // NB: if the dict is hardcoded, calling render() will re-import the original dict;
@@ -306,7 +307,7 @@ class JSONEditorWidget extends Widget {
             const addButton = document.createElement('button');
             addButton.id = `${key}-AddNewButton`
             addButton.textContent = 'Add New';
-
+            
             // append the platform section to the container:
             container.appendChild(platform_section);
             const createNewRow = () => {
@@ -372,6 +373,7 @@ class JSONEditorWidget extends Widget {
 
                             // remove the input boxes and re-render the page with the updated dict:
                             //newRow.remove();
+                            this.updateJSONData();
                             this.render();
                         }
                         else {
@@ -387,11 +389,11 @@ class JSONEditorWidget extends Widget {
                         }
                     }
                 }
-
-                const saveButton = document.createElement('button');
-                saveButton.textContent = 'Enter';
-                saveButton.addEventListener('click', saveNewRow);
-                newRow.appendChild(saveButton);
+                
+                const enterButton = document.createElement('button');
+                enterButton.textContent = 'Enter';
+                enterButton.addEventListener('click', saveNewRow);
+                newRow.appendChild(enterButton);
                 platform_section.appendChild(newRow);
             }
             
@@ -401,16 +403,8 @@ class JSONEditorWidget extends Widget {
         }   
     }
 
-    // Add a Save button at the bottom of the page to upload the JSON platform_config file.
-    const saveButton = document.createElement('button');
-    saveButton.textContent = 'Save';
-    saveButton.id = 'saveButton';
-    saveButton.addEventListener('click', () => this.updateJSONData());
-    container.appendChild(saveButton);
-
     // Add the container to the widget node
     this.node.appendChild(container);
-    
 }
 
 }

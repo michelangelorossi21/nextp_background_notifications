@@ -19,48 +19,51 @@
     padding: 10px /* Distribute space between cells */
   }
   
-  .cell {
-    margin: 10px;
-    
-  }
+.cell {
+  margin: 10px;
   
-  .value_subcell {
-    margin-left: 3px; /* Adjust margin for spacing between subcells */
-  }
+}
 
-  .button_subcell {
-    padding: 8px;
-  }
+.value_subcell {
+  margin-left: 3px; /* Adjust margin for spacing between subcells */
+}
 
-  a:hover {
-    text-decoration: underline;
-    color: blue;
-  }
+.button_subcell {
+  padding: 8px;
+}
 
-  a:link {
-    font-weight: normal;
-    text-decoration: underline;
-  }
+a:hover {
+  text-decoration: underline;
+  color: blue;
+}
 
-  .default {
-    font-weight: bold;
-  }
+a:link {
+  font-weight: normal;
+  text-decoration: underline;
+}
 
-  button {
-    margin: 5px;
-  }
+.default {
+  font-weight: bold;
+}
 
-  #saveButton {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 35px;
-  }
+button {
+  margin: 5px;
+}
 
-  .warning-message { 
-    color: red;
-  }
+.warning-message { 
+  color: red;
+}
+
+#saveButtonContainer {
+  position:absolute;
+  bottom:0;
+  right: 0;
+}
+
+#saveButton {
+  width:35px;
+  height: 40px;
+}
 
 
   

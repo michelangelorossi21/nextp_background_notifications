@@ -40,6 +40,7 @@ def send_slack_notification(message, destination):
     if config_data:
         # select only slack channels:
         slack_channels = config_data['slack'] 
+        destinationFound = False
 
         # if no destination specified, search for a default destination:
         if not destination:
@@ -52,6 +53,8 @@ def send_slack_notification(message, destination):
                     name = slack_channel['name']
                     channel = slack_channel['channel']
                     token = slack_channel['token']
+
+                    destinationFound = True
                 
             # if no default present: ERROR!
             if not foundDefault:
@@ -65,28 +68,34 @@ def send_slack_notification(message, destination):
                     name = slack_channel['name']
                     channel = slack_channel['channel']
                     token = slack_channel['token']
-            
-        url = "https://slack.com/api/chat.postMessage"
-                        
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "channel": channel,
-            "text": message
-        }
 
-        # Check if notification has been correctly sent
-        try:
-            response = requests.post(url, headers=headers, json=payload)
-            response_data = response.json()
-            if response_data["ok"]:
-                print(f"Notification correctly sent to {channel}")
-            else:
-                print(f"Error in sending notification: {response_data["error"]}")
-        except Exception as e:
-            print(f"Error in sending notification: {e}")
+                    destinationFound = True
+
+        if destinationFound: 
+            url = "https://slack.com/api/chat.postMessage"
+                            
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "channel": channel,
+                "text": message
+            }
+
+            # Check if notification has been correctly sent
+            try:
+                response = requests.post(url, headers=headers, json=payload)
+                response_data = response.json()
+                if response_data["ok"]:
+                    print(f"Notification correctly sent to {channel}")
+                else:
+                    print(f"Error in sending notification: {response_data["error"]}")
+            except Exception as e:
+                print(f"Error in sending notification: {e}")
+        
+        else:
+            print(f'Destination {destination} not found. check if it exists.')
 
     else:
         print('ERROR: platform_config data not correcty imported. Check if platform_config.json exists or is correctly located.')
@@ -100,6 +109,7 @@ def send_telegram_notification(message, destination):
 
         telegram_bots = config_data['telegram'] # select only telegram bots
 
+        destinationFound = False
         # if no destination specified, search for a default destination:
         if not destination:
             foundDefault = False
@@ -110,6 +120,8 @@ def send_telegram_notification(message, destination):
                     bot_name = telegram_bot['name']
                     bot_token = telegram_bot['token']
                     chat_id = telegram_bot['chat_id']
+
+                    destinationFound = True
                 
             # if no default present: ERROR!
             if not foundDefault:
@@ -121,25 +133,30 @@ def send_telegram_notification(message, destination):
             for telegram_bot in telegram_bots:
                 if destination == telegram_bot['name']:
                     bot_name = telegram_bot['name']
-                    bot_token = telegram_bot['bot_token']
+                    bot_token = telegram_bot['token']
                     chat_id = telegram_bot['chat_id']
+
+                    destinationFound = True
             
+        if destinationFound:
+            # collect params:
+            url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+            params = {"chat_id": chat_id, "text": message}
 
-        # collect params:
-        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-        params = {"chat_id": chat_id, "text": message}
-
-        # check if the notification has been correctly sent:
-        try:
-            response = requests.post(url, json=params)
-            response_data = response.json()
-            if response_data["ok"]:
-                bot_name = response_data['result']['from']['first_name']
-                print(f"Notification correctly sent to {bot_name}")
-            else:
-                print(f"Error in sending notification: {response_data["error"]}")
-        except Exception as e:
-            print(f"Error in sending notification: {e}. Please check settings.")
+            # check if the notification has been correctly sent:
+            try:
+                response = requests.post(url, json=params)
+                response_data = response.json()
+                if response_data["ok"]:
+                    bot_name = response_data['result']['from']['first_name']
+                    print(f"Notification correctly sent to {bot_name}")
+                else:
+                    print(f"Error in sending notification: {response_data["error"]}")
+            except Exception as e:
+                print(f"Error in sending notification: {e}. Please check settings.")
+        
+        else:
+            print(f'Destination {destination} not found. Please check if it exists.')
         
     else:
         print('ERROR: platform_config data not correcty imported. Check if platform_config.json exists or is correctly located.')
