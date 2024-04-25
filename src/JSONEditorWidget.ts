@@ -2,6 +2,9 @@ import { Widget } from '@lumino/widgets';
 
 /* TODO Things to do (order of priority):
 1. TODO: pass CSRF token in the put request. How???
+    Try to get the jupyter token and pass it in the headers of the put request. 2 strategies:
+    a. write a func in typescript, e.g. an arrow function;
+    b. through the server extension, expose the get url_token func in python through an endpoint <---------- TRY!
 
 2. DONE: enter a new dict only if all fields are complete;
 
@@ -49,7 +52,6 @@ class JSONEditorWidget extends Widget {
         }
     }
     
-
     // Load JSON file with platform config.
     private async loadJSON(): Promise<void> {
         try {
@@ -61,7 +63,7 @@ class JSONEditorWidget extends Widget {
             throw error; // rethrow the error to handle it at a higher level
         }
     }
-
+    
     // Function to overwrite the original json config file with new data.
     async updateJSONData(): Promise<void> {
         /* const csrfToken = localStorage.getItem('csrfToken');
