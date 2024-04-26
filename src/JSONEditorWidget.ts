@@ -1,18 +1,6 @@
 import { Widget } from '@lumino/widgets';
 import { PageConfig } from '@jupyterlab/coreutils'
 
-/* TODO Things to do (order of priority):
-1. DONE: pass CSRF token in the put request. How???
-    Try to get the jupyter token and pass it in the headers of the put request. 2 strategies:
-    a. write a func in typescript, e.g. an arrow function;
-    b. through the server extension, expose the get url_token func in python through an endpoint <---------- TRY!
-
-2. DONE: enter a new dict only if all fields are complete;
-
-3. TODO: maybe sanitize the inputs
-
-4. Pack the extension
-*/
 
 class JSONEditorWidget extends Widget {
 
@@ -76,7 +64,7 @@ class JSONEditorWidget extends Widget {
             method: 'PUT',
             headers: headers,
             body: JSON.stringify(this.jsonContent)
-        }
+            }
         )
     
         if (!response.ok) {
@@ -368,7 +356,6 @@ class JSONEditorWidget extends Widget {
                             list.push(inputValues);
 
                             // remove the input boxes and re-render the page with the updated dict:
-                            //newRow.remove();
                             this.updateJSONData();
                             this.render();
                         }

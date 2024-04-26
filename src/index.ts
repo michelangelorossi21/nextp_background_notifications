@@ -7,13 +7,10 @@ import { JSONEditorWidget } from './JSONEditorWidget';
 import { PageConfig } from '@jupyterlab/coreutils'
 
 /*
-  TODO
-  1. Jupyter Server Extension: DONE:
-
-  2. DONE: find a way to avoid hardcoded protocol and base_url  
-
-  3. TODO: pack the extension and update README.MD
+  TODO:
+  4. Pack the extension
 */
+
 const PLUGIN_ID = 'NextPyter_notifications';
 
 const baseUrl = PageConfig.getBaseUrl(); 

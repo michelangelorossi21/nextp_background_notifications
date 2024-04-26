@@ -3,6 +3,22 @@
 [![Github Actions Status](/workflows/Build/badge.svg)](/actions/workflows/build.yml)[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh//main?urlpath=lab)
 A NextPyter extension that notifies the user when a cell has been executed.
 
+## Usage: inserting destinations
+
+To use this extension, first go to Settings -> NexPyter Notifications.
+Add your destinations by clicking "Add new" (telegram or slack) and filling every field and click "Enter" once done. You can edit or delete them as needed, and you can choose a "Default" option (one per platform).
+
+## Usage: The magic function
+
+To use the magic function, open a Juyter notebook and write in the first cell %load_ext nextp_notification_magic.
+Then, if you want to be notified when a particular cell has finished executing, simply use %%notify as the first line of that cell.
+
+ARGUMENTS:
+You can specify two arguments:
+- Platform (--platform, -p): "telegram" or "slack", if not specified the default is telegram;
+- Destination (--destination, -d): specify the name of the destination, accordingly to what you inserted in the Settings. If not specified, the extension will look for a "Default"; if no default is present, an error will be raised.
+
+
 ## Requirements
 
 - JupyterLab >= 4.0.0
