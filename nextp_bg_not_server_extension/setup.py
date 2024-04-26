@@ -1,12 +1,16 @@
-from setuptools import setup, find_packages
-
-'''Non copia automaticamente il file config json che c'è in server_config.d, bisogna copiarlo manualmente'''
+from setuptools import setup
 
 setup(
     name='nextp_bg_not_server_extension',
     version='0.1',
-    packages=find_packages(),
     include_package_data=True,
+    #package_data={'nextp_bg_not_server_extension': ['jupyter-config/jupyter_server_config.d/*.json']},
+    data_files=[
+        (
+            "etc/jupyter/jupyter_server_config.d",
+            ["jupyter-config/jupyter_server_config.d/nextp_bg_not_server_extension.json"],
+        ),
+    ],
     install_requires=[
         'jupyter_server'
     ],
