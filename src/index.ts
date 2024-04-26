@@ -11,6 +11,8 @@ import { PageConfig } from '@jupyterlab/coreutils'
   1. Jupyter Server Extension: DONE:
 
   2. DONE: find a way to avoid hardcoded protocol and base_url  
+
+  3. TODO: pack the extension and update README.MD
 */
 const PLUGIN_ID = 'NextPyter_notifications';
 

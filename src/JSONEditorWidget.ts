@@ -1,7 +1,8 @@
 import { Widget } from '@lumino/widgets';
+import { PageConfig } from '@jupyterlab/coreutils'
 
 /* TODO Things to do (order of priority):
-1. TODO: pass CSRF token in the put request. How???
+1. DONE: pass CSRF token in the put request. How???
     Try to get the jupyter token and pass it in the headers of the put request. 2 strategies:
     a. write a func in typescript, e.g. an arrow function;
     b. through the server extension, expose the get url_token func in python through an endpoint <---------- TRY!
@@ -12,7 +13,6 @@ import { Widget } from '@lumino/widgets';
 
 4. Pack the extension
 */
-
 
 class JSONEditorWidget extends Widget {
 
@@ -33,8 +33,6 @@ class JSONEditorWidget extends Widget {
         this.configFilePath = configFilePath;
         this.prototypesFilePath = prototypesFilePath;
 
-        // Load JSON content from files
-        // protoypes are fixed
         this.initialize(configFilePath, prototypesFilePath);
     }
 
@@ -66,18 +64,14 @@ class JSONEditorWidget extends Widget {
     
     // Function to overwrite the original json config file with new data.
     async updateJSONData(): Promise<void> {
-        /* const csrfToken = localStorage.getItem('csrfToken');
-        if (!csrfToken) {
-            throw new Error('CSRF token not found');
-        } */
+        // Get the jupyter Token and include it into the headers:
+        const jupyterToken = PageConfig.getToken();
+
         const headers: HeadersInit = {
+            'Authorization' : `Bearer ${jupyterToken}`,
             'Content-Type': 'application/json'
         };
 
-        // Include CSRF token in headers if it exists
-        /* if (csrfToken !== null) {
-            headers['X-CSRF-Token'] = csrfToken;
-        } */
         const response = await fetch(this.configFilePath, {
             method: 'PUT',
             headers: headers,

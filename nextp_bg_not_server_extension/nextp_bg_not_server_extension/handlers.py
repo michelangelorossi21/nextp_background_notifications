@@ -1,9 +1,9 @@
-from jupyter_server.base.handlers import JupyterHandler
+from jupyter_server.base.handlers import JupyterHandler, APIHandler
 from jupyter_server import serverapp
 import tornado
 import json
 import os
-import requests
+import subprocess
 
 '''TODO
     1. DONE: PUT request now working, BUT ONLY DISABLING CSRF TOKENS. 
@@ -94,7 +94,7 @@ def _load_jupyter_server_extension(nb_server_app):
     prototypes_route_pattern = '/nextp-background-notifications/prototypes'
 
     handlers = [(platform_route_pattern, JSONHandler, {'json_file_path': platform_file_path}),
-                (prototypes_route_pattern, JSONHandler, {'json_file_path': prototypes_file_path})
+                (prototypes_route_pattern, JSONHandler, {'json_file_path': prototypes_file_path}),
                 ]
     web_app.add_handlers(".*$", handlers)
     
