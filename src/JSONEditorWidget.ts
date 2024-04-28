@@ -1,7 +1,7 @@
 import { Widget } from '@lumino/widgets';
 import { PageConfig } from '@jupyterlab/coreutils'
 
-
+//FIXME: when editing, after clicking "enter" the default option disappers.
 class JSONEditorWidget extends Widget {
 
     private jsonContent: { [key: string]: any } = {};
@@ -164,7 +164,6 @@ class JSONEditorWidget extends Widget {
                                     // make sure that there is only one default per platform and reload the representation:
                                     toggle_default(dict, list);
                                     this.updateJSONData();
-                                    this.render();
                                 });
                                 
                                 row.appendChild(cell);
@@ -228,8 +227,13 @@ class JSONEditorWidget extends Widget {
                         input.replaceWith(value_subcell);
                     });
                 
-                    // Update the list with the updated values
+                    // Get the current default value and keep it unaltered, add it the updated values:
+                    const currentDefault = list[index]['default'];
+                    updatedValues['default'] = currentDefault;
+
+                    // Update the list with the updated values:
                     list[index] = updatedValues;
+                    console.log(list[index]['default']);
                     this.updateJSONData();
                 
                     // Change button text back to "Edit" and switch event listeners
@@ -339,7 +343,6 @@ class JSONEditorWidget extends Widget {
 
                         inputs.forEach((input: HTMLInputElement) => {
                             if (input.value.trim() == '') {
-                                console.log(input.value.trim());
                                 isValid = false;
                             }
                             else {
@@ -357,7 +360,6 @@ class JSONEditorWidget extends Widget {
 
                             // remove the input boxes and re-render the page with the updated dict:
                             this.updateJSONData();
-                            this.render();
                         }
                         else {
                             const warningMessage = document.createElement('div');
