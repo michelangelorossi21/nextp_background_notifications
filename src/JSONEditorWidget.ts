@@ -1,7 +1,6 @@
 import { Widget } from '@lumino/widgets';
 import { PageConfig } from '@jupyterlab/coreutils'
 
-//FIXME: when editing, after clicking "enter" the default option disappers.
 class JSONEditorWidget extends Widget {
 
     private jsonContent: { [key: string]: any } = {};
@@ -35,6 +34,18 @@ class JSONEditorWidget extends Widget {
     
         } catch (error) {
             console.error('Error initializing JSON editor widget:', error);
+        }
+    }
+
+    // Load prototypes to create new rows in the platform config file.
+    private async loadPrototypes(): Promise<void> {
+        try {
+            const response = await fetch(this.prototypesFilePath)
+            this.prototypes = await response.json();
+    
+        } catch (error) {
+            console.error('Error loading prototypes:', error);
+            throw error; // rethrow the error to handle it at a higher level
         }
     }
     
@@ -73,18 +84,6 @@ class JSONEditorWidget extends Widget {
         else {
             console.log('correctly update the JSON config file');
             this.render();
-        }
-    }
-
-    // function to load prototypes to create new rows in the platform config file.
-    private async loadPrototypes(): Promise<void> {
-        try {
-            const response = await fetch(this.prototypesFilePath)
-            this.prototypes = await response.json();
-    
-        } catch (error) {
-            console.error('Error loading prototypes:', error);
-            throw error; // rethrow the error to handle it at a higher level
         }
     }
     
