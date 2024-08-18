@@ -54,6 +54,7 @@ class JSONEditorWidget extends Widget {
         try {
             const response = await fetch(this.configFilePath);
             this.jsonContent = await response.json();
+            console.log('retrieved JSON config data from nextp-background-notifications/platform_config')
     
         } catch (error) {
             console.error('Error loading JSON data:', error);
@@ -82,7 +83,7 @@ class JSONEditorWidget extends Widget {
             throw new Error(`Failed to update JSON data: ${response.statusText}`);
         }
         else {
-            console.log('correctly update the JSON config file');
+            console.log('JSON config file correctly updated to nextp-background-notifications/platform_config');
             this.render();
         }
     }
@@ -103,9 +104,9 @@ class JSONEditorWidget extends Widget {
 
             const list = this.jsonContent[key];
 
-            // Create a heading for the key
+            // Create a heading for the key (with first capitalized letter)
             const heading = document.createElement('h3');
-            heading.textContent = key;
+            heading.textContent = key.charAt(0).toUpperCase() + key.slice(1);
             container.appendChild(heading);
 
             // Loop through the list and create rows
@@ -183,7 +184,6 @@ class JSONEditorWidget extends Widget {
                 // Add a "edit button" to modify a dict:
                 const editMode = () => {
                     const rowParent = document.getElementById(`${key}-${index}`);
-                    console.log(`Modifyng ${key}-${index} ${row.id}`)
                     const value_subcells = rowParent?.querySelectorAll('.value_subcell');
                     
                     value_subcells?.forEach((element) => {
@@ -209,36 +209,63 @@ class JSONEditorWidget extends Widget {
                     let updatedValues: { [key: string]: any } = {};
 
                     const rowParent = document.getElementById(`${row.id}`);
-                    const input_subcells = rowParent?.querySelectorAll('input');
-                
-                    input_subcells?.forEach((input) => {
-                        // Access the data key from the input element's ID (the same of the previous subcell)
-                        const key = input.id.split('-')[2];
-                        
-                        // Update the value in the updatedValues dictionary
-                        updatedValues[key] = input.value;
-                        
-                        // Replace the input element with the original subcell
-                        const value_subcell = document.createElement('span');
-                        value_subcell?.classList.add('value_subcell');
-                        value_subcell.textContent = input.value;
-                        value_subcell.id = input.id;
-                        input.replaceWith(value_subcell);
-                    });
-                
-                    // Get the current default value and keep it unaltered, add it the updated values:
-                    const currentDefault = list[index]['default'];
-                    updatedValues['default'] = currentDefault;
+                    
 
-                    // Update the list with the updated values:
-                    list[index] = updatedValues;
-                    console.log(list[index]['default']);
-                    this.updateJSONData();
-                
-                    // Change button text back to "Edit" and switch event listeners
-                    editButton.textContent = 'Edit';
-                    editButton.removeEventListener('click', enterDataAndExitEditMode);
-                    editButton.addEventListener('click', editMode);
+                    const input_subcells = rowParent?.querySelectorAll('input');
+                    let isValid = true;
+
+                    // check if all inputs are correctly filled:
+                    input_subcells?.forEach((input) => {
+                        if (input.value.trim() == '') {
+                            isValid = false;
+                        }
+                    });
+
+                    // Save the updated data if the form is valid:
+                    if (isValid) {
+                        input_subcells?.forEach((input) => {
+                            // Access the data key from the input element's ID (the same of the previous subcell)
+                            const key = input.id.split('-')[2];
+                            
+                            // Update the value in the updatedValues dictionary only if the form is not blank
+                            updatedValues[key] = input.value;
+    
+                            // Replace the input element with the original subcell
+                            const value_subcell = document.createElement('span');
+                            value_subcell?.classList.add('value_subcell');
+                            value_subcell.textContent = input.value;
+                            value_subcell.id = input.id;
+                            input.replaceWith(value_subcell);
+                            console.log(`Modified ${row.id}`);
+                            });
+
+                        // Get the current default value and keep it unaltered, add it the updated values:
+                        const currentDefault = list[index]['default'];
+                        updatedValues['default'] = currentDefault;
+
+                        // Update the list with the updated values:
+                        list[index] = updatedValues;
+                        this.updateJSONData();
+                    
+                        // Change button text back to "Edit" and switch event listeners
+                        editButton.textContent = 'Edit';
+                        editButton.removeEventListener('click', enterDataAndExitEditMode);
+                        editButton.addEventListener('click', editMode);
+                    }
+
+                    // otherwise, display a warning message:
+                    else {
+                        const warningMessage = document.createElement('div');
+                        warningMessage.id = `${row.id}-warningMessage`;
+                        warningMessage?.classList.add('warning-message');
+                        warningMessage.textContent = 'Some inputs are left blank. Please fill them.';
+
+                        const warning = document.getElementById(`${row.id}-warningMessage`);
+                        
+                        if (!warning) {
+                            row.appendChild(warningMessage);
+                        }
+                    }   
                 }
 
                 const editButton = document.createElement('button');
@@ -255,20 +282,14 @@ class JSONEditorWidget extends Widget {
                     // Get the parent element of the row
                     const id = `${key}-${index}`;
                     const rowParent = document.getElementById(id);
-                    console.log('rowParent to delete: ', rowParent?.id);
 
                     // Remove the parent element (row) from the DOM and from the list:
                     if (rowParent) {
-                        console.log(list)
                         const row_index = rowParent.id.split('-')[1]; // find the index of the row in the list:
-                        console.log(`element to delete: ${row_index}`);
                         list.splice(row_index, 1);
                         rowParent.remove();
                         this.updateJSONData();
                         
-
-                        // NB: if the dict is hardcoded, calling render() will re-import the original dict;
-                        //this.render();
                         console.log('deleted: ', id);
                     }
                 });

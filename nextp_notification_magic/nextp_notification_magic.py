@@ -6,8 +6,6 @@ from .utils import get_notebook_from_request
 
 import time
 
-# TODO: show the output when cell has finished executing
-
 @magics_class
 class NextP_notification_magic(Magics):
 

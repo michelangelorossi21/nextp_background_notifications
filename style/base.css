@@ -54,17 +54,6 @@ button {
   color: red;
 }
 
-#saveButtonContainer {
-  position:absolute;
-  bottom:0;
-  right: 0;
-}
-
-#saveButton {
-  width:35px;
-  height: 40px;
-}
-
 
   
 

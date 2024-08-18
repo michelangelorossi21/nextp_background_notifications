@@ -29,7 +29,7 @@ function activate(app: JupyterFrontEnd, palette: ICommandPalette, menu: IMainMen
   // Add a command to open NextP notifications settings
   const commandId = 'nextp-notifications:open-settings';
   app.commands.addCommand(commandId, {
-    label: 'NextPyter Notifications',
+    label: 'Destinations',
     caption: 'Open NextPyter notifications settings',
     execute: () => {
       console.log('NextPyter notifications settings command executed!');

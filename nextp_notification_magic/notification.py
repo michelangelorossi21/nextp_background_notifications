@@ -139,7 +139,8 @@ def send_telegram_notification(message, destination):
                 destinationFound = True
 
     if not destinationFound: 
-        raise ValueError(f'Destination {destination} not found. check if it exists.')
+        print(f'Destination {destination} not found. check if it exists.')
+        raise ValueError("Invalid destination")
     
     # collect params:
     url = f"https://api.telegram.org/bot{token}/sendMessage"
