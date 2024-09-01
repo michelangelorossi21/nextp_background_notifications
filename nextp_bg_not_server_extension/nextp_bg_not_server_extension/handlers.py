@@ -5,10 +5,6 @@ import json
 import os
 import subprocess
 
-'''TODO
-    1. DONE: PUT request now working, BUT ONLY DISABLING CSRF TOKENS. 
-    2. TODO: Find a way to copy the server_config.d/json file automatically and not manually. maybe in the setup.py...
-'''
 PROTOTYPES = {"telegram": {"name": "", "token": "", "chat_id":"", "default":""}, 
               "slack": {"name": "", "channel": "", "token": "", "default": ""}}
 
@@ -21,23 +17,12 @@ class JSONHandler(JupyterHandler):
     #@tornado.web.authenticated
     def get(self):
         try:
-
             # Attempt to load JSON from file
             with open(self.json_file_path, 'r') as f:
                 json_data = json.load(f)
-            self.finish(json_data)
-
-        except FileNotFoundError:
-            # File not found. Create one.
-            with open(self.json_file_path, 'w') as f:
-                json_data = {}
-                for key in PROTOTYPES.keys():
-                    json_data[key] = []
-                json.dump(json_data, f)
-
+            
             self.set_status(200)
             self.finish(json_data)
-            self.finish({'error': str(FileNotFoundError)})
 
         except Exception as e:
             self.set_status(500)
@@ -84,10 +69,19 @@ def _load_jupyter_server_extension(nb_server_app):
     platform_file_path = os.path.join(config_dir, 'platform_config.json')
     prototypes_file_path = os.path.join(config_dir, 'prototypes.json')
 
-    # create the prototypes json file:
+    # create the prototypes json file (if not exists):
     if not os.path.exists(prototypes_file_path):
         with open(prototypes_file_path, 'w') as file:
             json.dump(PROTOTYPES, file)
+    
+    # create the config json file (if not exists):
+    if not os.path.exists(platform_file_path):
+        with open(platform_file_path, 'w') as f:
+            json_data = {}
+            for key in PROTOTYPES.keys():
+                json_data[key] = []
+            json.dump(json_data, f)
+    
 
     # Define the route patterns and add the handler
     platform_route_pattern = '/nextp-background-notifications/platform_config'

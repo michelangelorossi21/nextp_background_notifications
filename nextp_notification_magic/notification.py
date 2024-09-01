@@ -25,13 +25,22 @@ def send_notification(info, platform=None, destination=None):
         message += "Execution failed!\n"
         message += f"Error: {exception}"
 
-    # call the chosen platform notification or print error:
+    '''# call the chosen platform notification or print error:
     if platform == 'telegram' or platform is None:
         send_telegram_notification(message, destination)
     elif platform == 'slack':
         send_slack_notification(message, destination)
     else:
-        print("Nextp_notification_magic error: Please choose a valid platform.")
+        print("Nextp_notification_magic error: Please choose a valid platform.")'''
+
+    # call the chosen platform notification or print error:
+    match platform:
+        case 'telegram' | None:     # Set Telegram as the default platform
+            send_telegram_notification(message, destination)
+        case 'slack':
+            send_slack_notification(message, destination)
+        case _:
+            print("Nextp_notification_magic error: Please choose a valid platform.")
 
 
 def send_slack_notification(message, destination):
