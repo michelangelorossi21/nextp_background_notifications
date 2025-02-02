@@ -42,23 +42,24 @@ To remove the extension, execute:
 pip uninstall nextp_background_notifications
 ```
 ## Images:
-Here are some images.
+
 1. Menu view:
 
-![Menu_view](https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/Menu%20view%20HD.png)
+<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/Menu%20view%20HD.png" width="300"/>
 
 2. Usage example (with initial import in the notebook)
 
-![Example_usage](https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/magic%20correctly%20sent.png)
+<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/magic%20correctly%20sent.png" width="300"/>
+
 
 3. Telegram notification of correct execution:
 
-![Notification_correct](https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/cell_correctly_executed_screenshot%20-%20Copia.jpg)
+<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/cell_correctly_executed_screenshot%20-%20Copia.jpg" width="150"/>
+
 
 4. Telegram notification of failed execution:
 
-![Notification_failed](https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/err_c_not_defined_screenshot%20-%20Copia.jpg)
-
+<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/err_c_not_defined_screenshot%20-%20Copia.jpg" width="150"/>
 
 ## Contributing
 
