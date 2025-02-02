@@ -45,21 +45,21 @@ pip uninstall nextp_background_notifications
 
 1. Menu view:
 
-<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/Menu%20view%20HD.png" width="300"/>
+<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/Menu%20view%20HD.png" width="500"/>
 
 2. Usage example (with initial import in the notebook)
 
-<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/magic%20correctly%20sent.png" width="300"/>
+<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/magic%20correctly%20sent.png" width="500"/>
 
 
 3. Telegram notification of correct execution:
 
-<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/cell_correctly_executed_screenshot%20-%20Copia.jpg" width="150"/>
+<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/cell_correctly_executed_screenshot%20-%20Copia.jpg" width="300"/>
 
 
 4. Telegram notification of failed execution:
 
-<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/err_c_not_defined_screenshot%20-%20Copia.jpg" width="150"/>
+<img src="https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/err_c_not_defined_screenshot%20-%20Copia.jpg" width="300"/>
 
 ## Contributing
 
