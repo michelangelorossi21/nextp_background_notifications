@@ -1,7 +1,8 @@
 # nextp_background_notifications
 
 [![Github Actions Status](/workflows/Build/badge.svg)](/actions/workflows/build.yml)[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh//main?urlpath=lab)
-A NextPyter extension that notifies the user when a cell has been executed.
+A JupyterLab extension that notifies the user when a cell has been executed.
+Originally for NextPyter, a work-in-progress Platform by Università di Modena e Reggio Emilia, but perfectly working for every JupyterLab enviroment.
 
 ## Usage: inserting destinations
 
