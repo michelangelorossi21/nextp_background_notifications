@@ -1,6 +1,8 @@
 # nextp_background_notifications
 
-[![Github Actions Status](/workflows/Build/badge.svg)](/actions/workflows/build.yml)[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh//main?urlpath=lab)
+[![Github Actions Status](/workflows/Build/badge.svg)](/actions/workflows/build.yml)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh//main?urlpath=lab)
+
 A JupyterLab extension that notifies the user when a cell has been executed.
 Originally for NextPyter, a work-in-progress Platform by Università di Modena e Reggio Emilia, but perfectly working for every JupyterLab enviroment.
 
@@ -39,6 +41,24 @@ To remove the extension, execute:
 ```bash
 pip uninstall nextp_background_notifications
 ```
+## Images:
+Here are some images.
+1. Menu view:
+
+![Menu_view](https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/Menu%20view%20HD.png)
+
+2. Usage example (with initial import in the notebook)
+
+![Example_usage](https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/magic%20correctly%20sent.png)
+
+3. Telegram notification of correct execution:
+
+![Notification_correct](https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/cell_correctly_executed_screenshot%20-%20Copia.jpg)
+
+4. Telegram notification of failed execution:
+
+![Notification_failed](https://github.com/michelangelorossi21/nextp_background_notifications/blob/master/err_c_not_defined_screenshot%20-%20Copia.jpg)
+
 
 ## Contributing
 
